@@ -17,4 +17,3 @@ use App\Http\Controllers\WelcomeController;
 Route::get('/', [WelcomeController::class, 'index']);
 Route::post('/login', [WelcomeController::class, 'login'])->name('welcome.login');
 Route::get('/logout', [WelcomeController::class, 'logout'])->name('welcome.logout');
-Route::get('/test', [WelcomeController::class, 'fetchFivePosts'])->name('welcome.fetchonepost');

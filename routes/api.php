@@ -17,8 +17,7 @@ use App\Http\Controllers\WelcomeController;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::post('/get-token', [WelcomeController::class, 'getToken'])->name('welcome.token');
+Route::middleware('auth:sanctum')->get('/kanye-rest', [WelcomeController::class, 'fetchFivePosts']);
 
-Route::get('/kanye-rest', [WelcomeController::class, 'fetchFivePosts']);
+// Route::get('/kanye-rest-token', [WelcomeController::class, 'fetchFivePosts']);

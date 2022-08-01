@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Http as HTTPClient;
 
 class WelcomeController extends Controller
 {
+    public function __construct() {
+        $this->client = new \GuzzleHttp\Client();
+    }
+
     public function index() {
         if (Auth::check()) {
             return view('frontend.welcome');
@@ -19,20 +23,7 @@ class WelcomeController extends Controller
     }
     
     public function login(Request $request) {
-        $request->validate([
-            'email' => 'required',
-            'password' => 'required'
-        ]);
-        $data = $request->all();
-        $password = $data['password'];
-        $email = $data['email'];
-        
-        
-        $attributes = [
-            'email'=> $email, 
-            'password'=> $password
-        ];
-        if (Auth::attempt($attributes)) {
+        if($this->loginAction($request)) {
             $request->session()->regenerate();
             return redirect('/');
         };
@@ -48,24 +39,58 @@ class WelcomeController extends Controller
 
     protected function fetchOnePost() {
         try {
-            //code...
-            // $res = HTTPClient::get('https://api.kanye.rest/')->json();
-            $res = HTTPClient::get('https://api.kanye.rest/text');
-            dd ($res);
-            
-            if(isset($res) && isset($res['quote'])) {
-                return $res['quote'];            
-            }
+            $client = new \GuzzleHttp\Client();
+            $response = $client->request('GET', 'https://api.kanye.rest/text');
+            $body = (string) $response->getBody(); 
+            return $body;
+
         } catch (\Exception $ex) {
         }        
         return 'failed';
     }
 
-    public function fetchFivePosts(Request $request) {
-        // get the request      
-        $result = $this->fetchOnePost();
-        dd($result);
+    public function fetchFivePosts(Request $request) {        
+        $posts_meta = array_fill(0, 5, " ");
+
+        $this->result = [];
         
-        return $result;
+
+        $promises = array_map(function ($username) {
+            $url = 'https://api.kanye.rest/text';
+            return $this->client->requestAsync('GET', $url);
+        }, $posts_meta);
+        
+        // Wait till all the requests are finished.
+        \GuzzleHttp\Promise\all($promises)->then(function (array $responses) {
+            $this->result = array_map(function ($response) {
+                return (string) $response->getBody();
+            }, $responses);
+        })->wait();
+
+        return response()->json($this->result);        
+    }
+    protected function loginAction(Request $request) {
+        $request->validate([
+            'email' => 'required',
+            'password' => 'required'
+        ]);
+
+        $data = $request->all();
+        $password = $data['password'];
+        $email = $data['email'];
+
+        $attributes = [
+            'email'=> $email, 
+            'password'=> $password
+        ];
+        return Auth::attempt($attributes);
+    }
+
+    public function getToken(Request $request) {
+        if (Auth::check() || $this->loginAction($request)) {
+            $token = $request->user()->createToken('test-token'); 
+            return ['token' => $token->plainTextToken];
+        }
+        return redirect('/');
     }
 }
