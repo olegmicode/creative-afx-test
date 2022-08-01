@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Middleware\PasswordValid;
+use App\Http\Controllers\WelcomeController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('frontend.welcome');
-});
+Route::get('/', [WelcomeController::class, 'index']);
+Route::post('/login', [WelcomeController::class, 'login'])->name('welcome.login');
+Route::get('/logout', [WelcomeController::class, 'logout'])->name('welcome.logout');
+Route::get('/test', [WelcomeController::class, 'fetchFivePosts'])->name('welcome.fetchonepost');

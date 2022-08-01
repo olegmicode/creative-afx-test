@@ -24,13 +24,17 @@ class ShowPosts extends Component
     }
     
     public function fetchAPI() {        
-        $res = Http::get('https://api.kanye.rest/')->json();
-        
-        if(isset($res) && isset($res['quote'])) {
-            return $res['quote'];            
+        try {
+            //code...
+            $res = Http::get('https://api.kanye.rest/')->json();
+            
+            if(isset($res) && isset($res['quote'])) {
+                return $res['quote'];            
+            }
+        } catch (Exception $ex) {
+            return '';
         }
         
-        return '';
     }
 
     public function render()
@@ -47,4 +51,6 @@ class ShowPosts extends Component
     public function refreshPosts() {
         $this->fetchPosts();
     }
+
+   
 }
