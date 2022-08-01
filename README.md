@@ -33,6 +33,7 @@ The application should have the following features.
   Update the db configuration. 
 
 - migrate the database  
+  ```database/database.sqlite```
   ```php artisan migrate```
 
 - seed the database  
