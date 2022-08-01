@@ -1,4 +1,4 @@
-### 1. Laravel Coding Test Task
+## 1. Laravel Coding Test Task
 The task will contain a few core features most applications have. That includes connecting to an API, basic MVC, exposing an API, and tests.  
 The API we want you to connect to is https://kanye.rest/.  
 The application should have the following features.
@@ -18,10 +18,10 @@ The application should have the following features.
 - The above features are tested with Unit tests (nice to have)
 
 
-#### Notes
+### Notes
 - HTML/CSS/JS styling is not part of this, it doesn’t matter how it looks.
 
-### 2. Installing Guide
+## 2. Installing Guide
 - clone the project from git   
    https://github.com/olegmicode/creative-afx-test
 
@@ -43,13 +43,22 @@ The application should have the following features.
   ```php artisan serve```
 
 - You can check api  
-  #### For the web interface   
-```http://localhost:8000/```  
-  #### For the api interface
+  ### For the web interface   
+  ```http://localhost:8000/```  
+  ### For the api interface
   
   Get Token
-```http://localhost:8000/api/get-token```  
-  Json Input   ```{"email":"admin@example.com",  "password":"password" }```
-  Get the kanye Rest APi
-```http://localhost:8000/api/kanye-rest```  
-  Barear token from Token Input
+  ```http://localhost:8000/api/get-token```  
+  Json Input   ```{"email":"admin@example.com",  "password":"password" }```   
+  Get the kanye Rest API with Barear token ```http://localhost:8000/api/kanye-rest```  
+
+  You can install the vendor sail first and run the code in docker  
+  ``composer require laravel/sail --dev``   
+  ``php artisan sail:install``   
+  ```./vendor/bin/sail up```   
+
+
+  
+     
+
+
