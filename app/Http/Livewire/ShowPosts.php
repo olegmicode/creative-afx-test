@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use Illuminate\Support\Facades\Http;
 use Livewire\Component;
+use App\Helpers\WelcomeApi;
  
 
 class ShowPosts extends Component
@@ -12,30 +13,15 @@ class ShowPosts extends Component
     public $count;
 
     public function mount() {
+        
         $this->fetchPosts();
     }
 
     public function fetchPosts() {
-        $posts = [];
-        for($i = 0; $i < 5; $i ++) {
-            $posts[] = $this->fetchAPI();            
-        }
-        $this->posts = $posts;
+        $welcomeApi = new WelcomeApi();
+        $this->posts = $welcomeApi->fetchInFivePosts();   
     }
     
-    public function fetchAPI() {        
-        try {
-            //code...
-            $res = Http::get('https://api.kanye.rest/')->json();
-            
-            if(isset($res) && isset($res['quote'])) {
-                return $res['quote'];            
-            }
-        } catch (Exception $ex) {
-            return '';
-        }
-        
-    }
 
     public function render()
     {
@@ -45,8 +31,7 @@ class ShowPosts extends Component
     }
 
     public function updatingCount($value) {
-        $this->fetchPosts();
-        \Log::info($value);
+        $this->fetchPosts();        
     }
     public function refreshPosts() {
         $this->fetchPosts();

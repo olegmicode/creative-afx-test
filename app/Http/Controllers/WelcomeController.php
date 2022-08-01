@@ -4,14 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use GuzzleHttp\Client as GuzzleHttpClient;
 use Illuminate\Support\Facades\Http as HTTPClient;
-
+use App\Helpers\WelcomeApi;
 
 class WelcomeController extends Controller
 {
     public function __construct() {
-        $this->client = new \GuzzleHttp\Client();
+        $this->welcomeApi = new WelcomeApi();
     }
 
     public function index() {
@@ -37,37 +36,8 @@ class WelcomeController extends Controller
         return redirect('/');
     }
 
-    protected function fetchOnePost() {
-        try {
-            $client = new \GuzzleHttp\Client();
-            $response = $client->request('GET', 'https://api.kanye.rest/text');
-            $body = (string) $response->getBody(); 
-            return $body;
-
-        } catch (\Exception $ex) {
-        }        
-        return 'failed';
-    }
-
-    public function fetchFivePosts(Request $request) {        
-        $posts_meta = array_fill(0, 5, " ");
-
-        $this->result = [];
-        
-
-        $promises = array_map(function ($username) {
-            $url = 'https://api.kanye.rest/text';
-            return $this->client->requestAsync('GET', $url);
-        }, $posts_meta);
-        
-        // Wait till all the requests are finished.
-        \GuzzleHttp\Promise\all($promises)->then(function (array $responses) {
-            $this->result = array_map(function ($response) {
-                return (string) $response->getBody();
-            }, $responses);
-        })->wait();
-
-        return response()->json($this->result);        
+       public function fetchFivePosts(Request $request) {        
+        return response()->json($this->welcomeApi->fetchInFivePosts());        
     }
     protected function loginAction(Request $request) {
         $request->validate([
@@ -92,5 +62,5 @@ class WelcomeController extends Controller
             return ['token' => $token->plainTextToken];
         }
         return redirect('/');
-    }
+    }    
 }
